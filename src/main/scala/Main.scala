@@ -9,21 +9,44 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 object PredictionIndex extends App {
 
   // in this example we create a client to a local Docker container at localhost:9200
+  val props = ElasticProperties("http://localhost:9200")
+  val client = ElasticClient(JavaClient(props))
+
+  // we must import the dsl
+  import com.sksamuel.elastic4s.ElasticDsl._
 
   //get current directory and add relative paths
-  val dir = os.pwd / "csv" / "tazi-se-interview-project-data.csv"
+  val dir = os.pwd / "data" / "tazi-se-interview-project-data.csv"
+
+  //keep time counter
+  val start = System.nanoTime
 
   //read and process csv file
   val bufferedSource = io.Source.fromFile(dir.toString)
-    for (line <- bufferedSource.getLines) {
+    for (line <- bufferedSource.getLines.drop(1)) {
         val cols = line.split(",").map(_.trim)
-        // do whatever you want with the columns here
-        println(s"${cols(0)}|${cols(1)}|${cols(2)}|${cols(3)}|${cols(4)}|${cols(5)}|${cols(6)}|${cols(7)}")
+        //index the document
+        client.execute {
+          indexInto("prediction").id(cols(0)).fields(
+            "given_label" -> cols(1),
+            "model1_A"    -> cols(2).toDouble,
+            "model1_B"    -> cols(3).toDouble,
+            "model2_A"    -> cols(4).toDouble,
+            "model2_B"    -> cols(5).toDouble,
+            "model3_A"    -> cols(6).toDouble,
+            "model3_B"    -> cols(7).toDouble
+          ).refresh(RefreshPolicy.Immediate)
+        }.await
+        //println(s"${cols(0)}|${cols(1)}|${cols(2)}|${cols(3)}|${cols(4)}|${cols(5)}|${cols(6)}|${cols(7)}")
+        println("id: " + cols(0))
     }
     bufferedSource.close
 
+  //data population is completed
+  val difference = (System.nanoTime - start) / 1e9d
 
-
+  println("Time: " + difference + " second")
+  /*
   
 
   val props = ElasticProperties("http://localhost:9200")
@@ -85,6 +108,8 @@ object PredictionIndex extends App {
   //resp foreach (search => println(s"There were ${search.totalHits} total hits"))
 
   val finish = (System.nanoTime - start) / 1e9d
+
+  */
 
   client.close()
 
