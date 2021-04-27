@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\src\test\scala\Test.scala:10:9: value should is not a member of Double[0m
+[0m[[0m[31merror[0m] [0m[0m    res should be(0.216)[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\src\test\scala\Test.scala:10:16: not found: value be[0m
+[0m[[0m[31merror[0m] [0m[0m    res should be(0.216)[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

@@ -26,6 +26,7 @@ version := "1.0"
 // You can define other libraries as dependencies in your build like this:
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
 libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.7.3"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.3" % Runtime
 libraryDependencies ++= Seq(

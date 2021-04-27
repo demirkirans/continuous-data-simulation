@@ -1,3 +1,4 @@
+package prediction
 import com.sksamuel.elastic4s.fields.TextField
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties}
@@ -21,12 +22,21 @@ object PredictionIndex extends App {
 
   // we must import the dsl
   import com.sksamuel.elastic4s.ElasticDsl._
+
+
   
-  //////////////////////////////////////////////PART 1/////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////  PART 1  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
   //get current directory and add relative paths
   val dir = os.pwd / "data" / "tazi-se-interview-project-data.csv"
+
+  /*
 
   //keep time counter
 
@@ -167,22 +177,24 @@ object PredictionIndex extends App {
 
   println("=> Total instance: " + (threadResults._1 + threadResults._2 + threadResults._3) )
   println("=> Instance per second: " + (threadResults._1 + threadResults._2 + threadResults._3) / deltaTime + "\n" )
-  
 
- 
+  */
+  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////   PART 2  ////////////////////////////////////////////////////////////
-
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 
-  val startTime = System.currentTimeMillis()
-
+  
   def calculateProb(model1: Double, model2: Double, model3:Double): Double = {
     //weights for models
     val weight1 = 0.5
     val weight2 = 0.6
     val weight3 = 0.7
 
-    return (model1*weight1 + model2*weight2 + model3*weight3) / 3
+    return (model1*weight1 + model2*weight2 + model3*weight3) / (weight1 + weight2 + weight3)
   }
 
   def findConfusion(predictions_A: Array[Double], predictions_B: Array[Double], given_label: String): String = {
@@ -205,27 +217,6 @@ object PredictionIndex extends App {
     return confusion
 
   }
-
-  //val nodes = ElasticProperties("http://localhost:9200,http://localhost:9201")
-  //val client = ElasticClient(JavaClient(nodes))
-
-  /*
-  client.execute {
-    createIndex("confusion_matrix")mappings(
-      properties(
-        IntegerField("True Positive"),
-        IntegerField("False Negative"),
-        IntegerField("False Positive"),
-        IntegerField("True Negative")
-
-        //"True Positive" typed IntegerType,
-        //"False Negative" typed IntegerType,
-        //"False Positive" typed IntegerType,
-        //"True Negative" typed IntegerType
-      )
-    )
-  }.await
-  */
 
   def indexWindows(dir: String, start: Int, finish: Int): Int = {
     //hash map for confusion matrix
@@ -367,23 +358,27 @@ object PredictionIndex extends App {
     return window - 1
   }
 
+  val startTime = System.currentTimeMillis()
+
+  
+
   val thread1: Future[Int] = Future {
     val thread1StartTime = System.currentTimeMillis()
-    val windowNumber: Int = indexWindows(dir.toString, 1, 4001) //5.001 not included
+    val windowNumber: Int = indexWindows(dir.toString, 1, 2001) //5.001 not included
     val deltaTime = (System.currentTimeMillis() - thread1StartTime) / 1000.0
     println("Thread 1 time: " + deltaTime)
     windowNumber
   }
   val thread2: Future[Int] = Future {
     val thread2StartTime = System.currentTimeMillis()
-    val windowNumber: Int = indexWindows(dir.toString, 3001, 6001) //10.001 not included
+    val windowNumber: Int = indexWindows(dir.toString, 1001, 3001) //10.001 not included
     val deltaTime = (System.currentTimeMillis() - thread2StartTime) / 1000.0
     println("Thread 2 time: " + deltaTime)
     windowNumber
   }
   val thread3: Future[Int] = Future {
     val thread3StartTime = System.currentTimeMillis()
-    val windowNumber: Int = indexWindows(dir.toString, 5001, 10001) //10.001 not included
+    val windowNumber: Int = indexWindows(dir.toString, 2001, 4001) //10.001 not included
     val deltaTime = (System.currentTimeMillis() - thread3StartTime) / 1000.0
     println("Thread 3 time: " + deltaTime)
     windowNumber
@@ -397,7 +392,7 @@ object PredictionIndex extends App {
     //result5  <- thread5Future
   } yield (window1, window2, window3)
 
-
+  
   val windowNumbers = Await.result(result, Duration.Inf)
 
   //data population is completed
@@ -406,9 +401,9 @@ object PredictionIndex extends App {
 
   println("\n\n=> Total time for part ii : " + difference + " second")
   println("=> Number of confusion matrix : " + (windowNumbers._1 + windowNumbers._2 + windowNumbers._3) )
+  println("=> Confusion matrix per second: " + (windowNumbers._1 + windowNumbers._2 + windowNumbers._3) / difference + "\n")
 
-  println("=> Confusion matrix per second: " + (windowNumbers._1 + windowNumbers._2 + windowNumbers._3) / difference)
-
+  
   
 
   client.close()  

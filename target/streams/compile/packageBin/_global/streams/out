@@ -1,9 +1,11 @@
 [0m[[0m[0mdebug[0m] [0m[0mPackaging C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\hello-world_2.13-1.0.jar ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PredictionIndex$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\PredictionIndex$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PredictionIndex$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\PredictionIndex$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	PredictionIndex.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\PredictionIndex.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	prediction[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\prediction[0m
+[0m[[0m[0mdebug[0m] [0m[0m	prediction\PredictionIndex$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\prediction\PredictionIndex$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	prediction\PredictionIndex$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\prediction\PredictionIndex$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	prediction\PredictionIndex.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\serha\Desktop\2020-2021 Spring\Tazi.ai interview project\project\tazi\target\scala-2.13\classes\prediction\PredictionIndex.class[0m
 [0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m
