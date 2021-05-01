@@ -2,6 +2,7 @@ package prediction
 import com.sksamuel.elastic4s.fields.TextField
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties}
+import com.sksamuel.elastic4s.{RequestSuccess, RequestFailure}
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import scala.util.control.Breaks._
@@ -23,7 +24,7 @@ object PredictionIndex extends App {
   // we must import the dsl
   import com.sksamuel.elastic4s.ElasticDsl._
 
-
+  
   
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,12 +32,12 @@ object PredictionIndex extends App {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+  
 
   //get current directory and add relative paths
   val dir = os.pwd / "data" / "tazi-se-interview-project-data.csv"
 
-  /*
+  
 
   //keep time counter
 
@@ -139,21 +140,11 @@ object PredictionIndex extends App {
 
 
   val thread1Future: Future[Int] = Future {
-    val instanceNumber: Int = populateDataSourceSingle(dir.toString, 1, 71)
+    val instanceNumber: Int = populateDataSourceMultiple(dir.toString, 1, 10001)
     instanceNumber
   }
 
-  val thread2Future: Future[Int] = Future {
-    val instanceNumber: Int = populateDataSourceSingle(dir.toString, 71, 151)
-    instanceNumber
-  }
-
-  val thread3Future: Future[Int] = Future {
-    val instanceNumber: Int = populateDataSourceSingle(dir.toString, 151, 201)
-    instanceNumber
-  }
-
-  
+  /*
   val result: Future[(Int, Int,Int)] = for {
     result1    <- thread1Future
     result2    <- thread2Future
@@ -161,24 +152,26 @@ object PredictionIndex extends App {
     //result4  <- thread4Future
     //result5  <- thread5Future
   } yield (result1, result2, result3)
+  */
   
   
   //save the return variable when result is available
   //Force program to block
-  val threadResults = Await.result(result, Duration.Inf)
+  val threadResults = Await.result(thread1Future, Duration.Inf)
 
   //Calculate total time in minutes for poplulating data source
   val deltaTime = (System.currentTimeMillis() - startTime) / (1000.0  ) // in seconds
 
   println("\n\n=> Total time for 200 instance is " + deltaTime + " second")
 
-  //println("Total instance: " + threadResults )
-  //println("Instance per second: " + threadResults / deltaTime )
+  println("=> Total instance: " + threadResults )
+  println("=> Instance per second: " + threadResults / deltaTime )
 
-  println("=> Total instance: " + (threadResults._1 + threadResults._2 + threadResults._3) )
-  println("=> Instance per second: " + (threadResults._1 + threadResults._2 + threadResults._3) / deltaTime + "\n" )
+  //println("=> Total instance: " + (threadResults._1 + threadResults._2 + threadResults._3) )
+  //println("=> Instance per second: " + (threadResults._1 + threadResults._2 + threadResults._3) / deltaTime + "\n" )
 
-  */
+  
+  
   
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +179,7 @@ object PredictionIndex extends App {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-
+  
   
   def calculateProb(model1: Double, model2: Double, model3:Double): Double = {
     //weights for models
@@ -404,7 +397,40 @@ object PredictionIndex extends App {
   println("=> Confusion matrix per second: " + (windowNumbers._1 + windowNumbers._2 + windowNumbers._3) / difference + "\n")
 
   
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////   PART 3  ////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
+  /*
+
+  val startTime = System.currentTimeMillis()
+  
+  // now we can search for the document we just indexed
+  val resp = client.execute {
+    search("prediction").query(termQuery("_id", "241"))
+  }.await
+
+  val deltaTime = (System.currentTimeMillis() - startTime) / 1000.0
+
+  /*
+  println("---- Search Results ----")
+  val ret = resp match {
+    case failure: RequestFailure => "We failed " + failure.error
+    case results: RequestSuccess[SearchResponse] => results.result.hits.hits.toList
+    //println(results.result.hits.hits.toList)
+    //case results: RequestSuccess[_] => println(results.result)
+  }
+  */
+
+  println("---- Search Results ----")
+  
+  println("query time: " + deltaTime)
+  println(resp.result.hits.hits.toList.length//sourceAsMap("model1_A"))
+  
+  */
 
   client.close()  
   java.awt.Toolkit.getDefaultToolkit.beep()
